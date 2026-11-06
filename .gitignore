@@ -1,10 +1,35 @@
-HELP.md
+# Guía rápida
+# - Cada línea es un patrón de archivos que Git no debe versionar.
+# - Una barra final (target/) indica una carpeta; una barra inicial (/dist/) limita el patrón a la raíz del repo.
+# - El prefijo ! vuelve a incluir algo que coincidió con un patrón anterior.
+# - Un archivo que ya está versionado sigue versionado aunque se agregue acá: hay que sacarlo con `git rm --cached`.
+# - Para comprobar qué regla afecta a un archivo: `git check-ignore -v <ruta>`.
+
+# Maven: salida del build. Se regenera con ./mvnw verify.
 target/
+
+# Maven Wrapper: el jar se descarga solo. Sí se versionan mvnw, mvnw.cmd y maven-wrapper.properties.
 .mvn/wrapper/maven-wrapper.jar
+
+# Excepción: una carpeta llamada target o build dentro de src/ es código fuente, no salida del build.
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-### STS ###
+# Salida de build de otras herramientas.
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# Ayuda generada por start.spring.io.
+HELP.md
+
+# IntelliJ IDEA: configuración local del IDE.
+.idea
+*.iws
+*.iml
+*.ipr
+
+# Eclipse / Spring Tool Suite: configuración local del IDE.
 .apt_generated
 .classpath
 .factorypath
@@ -13,21 +38,12 @@ target/
 .springBeans
 .sts4-cache
 
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-
-### NetBeans ###
+# NetBeans: configuración local y salida de build.
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
 
-### VS Code ###
+# VS Code: configuración local del editor.
 .vscode/
