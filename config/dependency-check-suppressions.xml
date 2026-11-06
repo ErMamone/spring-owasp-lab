@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Falsos positivos de Dependency-Check. Cada supresión lleva un <notes> que explica por qué no aplica, y conviene
+	acotarla con packageUrl y un CVE concreto: una supresión amplia puede esconder una vulnerabilidad real más adelante.
+-->
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+</suppressions>

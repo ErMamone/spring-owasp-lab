@@ -19,6 +19,8 @@
 		<spotbugs-maven-plugin.version>4.10.5.0</spotbugs-maven-plugin.version>
 		<findsecbugs-plugin.version>1.14.0</findsecbugs-plugin.version>
 		<sast.excludeFilter>config/spotbugs-exclude-vulnerable.xml</sast.excludeFilter>
+		<dependency-check-maven.version>13.0.0</dependency-check-maven.version>
+		<cyclonedx-maven-plugin.version>2.9.3</cyclonedx-maven-plugin.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -119,6 +121,37 @@
 					</plugins>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.owasp</groupId>
+				<artifactId>dependency-check-maven</artifactId>
+				<version>${dependency-check-maven.version}</version>
+				<configuration>
+					<failBuildOnCVSS>7</failBuildOnCVSS>
+					<formats>
+						<format>HTML</format>
+						<format>SARIF</format>
+						<format>JSON</format>
+					</formats>
+					<suppressionFiles>
+						<suppressionFile>config/dependency-check-suppressions.xml</suppressionFile>
+					</suppressionFiles>
+					<!-- La key se lee de la variable de entorno: nunca aparece en el pom ni en la línea de comandos. -->
+					<nvdApiKeyEnvironmentVariable>NVD_API_KEY</nvdApiKeyEnvironmentVariable>
+					<!-- OSS Index exige token y no se configura uno en esta versión. -->
+					<ossIndexAnalyzerEnabled>false</ossIndexAnalyzerEnabled>
+					<!-- Fuera de ~/.m2 para cachear la base y las dependencias por separado. -->
+					<dataDirectory>${user.home}/.dependency-check-data</dataDirectory>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.cyclonedx</groupId>
+				<artifactId>cyclonedx-maven-plugin</artifactId>
+				<version>${cyclonedx-maven-plugin.version}</version>
+				<configuration>
+					<outputName>bom</outputName>
+					<outputFormat>json</outputFormat>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -129,6 +162,22 @@
 			<properties>
 				<sast.excludeFilter>config/spotbugs-exclude-none.xml</sast.excludeFilter>
 			</properties>
+		</profile>
+		<!--
+			A03. Agrega una dependencia con CVEs conocidas para probar que el gate de SCA corta el build.
+			log4j 1.2.17: CVE-2019-17571 y CVE-2022-23305, ambas CVSS 9.8 según NVD. La app no la usa (loguea con Logback):
+			solo está en el classpath. Nunca se activa en el build normal.
+		-->
+		<profile>
+			<id>vulnerable-deps</id>
+			<dependencies>
+				<dependency>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+					<version>1.2.17</version>
+					<scope>runtime</scope>
+				</dependency>
+			</dependencies>
 		</profile>
 	</profiles>
 

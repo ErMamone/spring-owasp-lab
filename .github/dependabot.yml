@@ -1,0 +1,11 @@
+version: 2
+updates:
+  - package-ecosystem: maven
+    directory: /
+    schedule:
+      interval: weekly
+  # También actualiza los SHA de las actions pineadas y su comentario de versión.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
