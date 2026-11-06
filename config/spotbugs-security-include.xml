@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Solo categoría SECURITY: el gate corta el build por vulnerabilidades, no por estilo ni bugs generales. -->
+<FindBugsFilter>
+	<Match>
+		<Bug category="SECURITY"/>
+	</Match>
+</FindBugsFilter>

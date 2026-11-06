@@ -16,6 +16,9 @@
 	<properties>
 		<java.version>25</java.version>
 		<jacoco-maven-plugin.version>0.8.16</jacoco-maven-plugin.version>
+		<spotbugs-maven-plugin.version>4.10.5.0</spotbugs-maven-plugin.version>
+		<findsecbugs-plugin.version>1.14.0</findsecbugs-plugin.version>
+		<sast.excludeFilter>config/spotbugs-exclude-vulnerable.xml</sast.excludeFilter>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -96,7 +99,37 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>com.github.spotbugs</groupId>
+				<artifactId>spotbugs-maven-plugin</artifactId>
+				<version>${spotbugs-maven-plugin.version}</version>
+				<configuration>
+					<effort>Max</effort>
+					<threshold>Low</threshold>
+					<includeFilterFile>config/spotbugs-security-include.xml</includeFilterFile>
+					<excludeFilterFile>${sast.excludeFilter}</excludeFilterFile>
+					<sarifOutput>true</sarifOutput>
+					<xmlOutput>true</xmlOutput>
+					<plugins>
+						<plugin>
+							<groupId>com.h3xstream.findsecbugs</groupId>
+							<artifactId>findsecbugs-plugin</artifactId>
+							<version>${findsecbugs-plugin.version}</version>
+						</plugin>
+					</plugins>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<!-- Mismo análisis que el gate, pero incluyendo el paquete vulnerable: prueba que la herramienta detecta. -->
+		<profile>
+			<id>sast-proof</id>
+			<properties>
+				<sast.excludeFilter>config/spotbugs-exclude-none.xml</sast.excludeFilter>
+			</properties>
+		</profile>
+	</profiles>
 
 </project>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+	<!-- Código roto a propósito. Lo cubre el job sast-proof, que lo analiza con spotbugs-exclude-none.xml. -->
+	<Match>
+		<Class name="~dev\.owasplab\.vulnerable\..*"/>
+	</Match>
+	<!--
+		SPRING_ENDPOINT no es una vulnerabilidad: marca cada método de un @RestController como "punto de entrada a
+		revisar". Dejarlo activo haría fallar el gate por el solo hecho de tener una API.
+	-->
+	<Match>
+		<Bug pattern="SPRING_ENDPOINT"/>
+	</Match>
+	<!--
+		Falso positivo: el patrón del log es constante y el único valor interpolado es un UUID generado por el servidor,
+		que no puede contener CRLF. El detector marca cualquier argumento no constante, también si se pasa como objeto UUID.
+		La supresión se limita a este método, para que CRLF_INJECTION_LOGS siga activo en el resto del código.
+		Límite conocido: el stacktrace que se loguea es multilínea y su mensaje puede incluir input del usuario; evitarlo
+		por completo requiere logging estructurado (A09, fuera de alcance en esta versión).
+	-->
+	<Match>
+		<Class name="dev.owasplab.secure.SecureExceptionHandler"/>
+		<Method name="handleUnexpected"/>
+		<Bug pattern="CRLF_INJECTION_LOGS"/>
+	</Match>
+</FindBugsFilter>

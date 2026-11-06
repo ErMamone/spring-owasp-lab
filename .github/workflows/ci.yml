@@ -29,3 +29,65 @@ jobs:
           name: jacoco-report
           path: target/site/jacoco
           if-no-files-found: warn
+
+  sast:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+      - name: SpotBugs + Find Security Bugs sobre secure/ y common/
+        run: ./mvnw -B compile spotbugs:check
+      - name: Reporte SAST
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: spotbugs-report
+          path: |
+            target/spotbugsXml.xml
+            target/spotbugsSarif.json
+          if-no-files-found: warn
+      - name: Subir SARIF al tab Security
+        if: always() && hashFiles('target/spotbugsSarif.json') != ''
+        # El gate es el paso de SpotBugs. Una falla al publicar (repo privado sin code scanning, PR de un fork) no debe
+        # confundirse con un hallazgo.
+        continue-on-error: true
+        uses: github/codeql-action/upload-sarif@33d7b85da1a04171e211befe2c739303b9a4c066 # v4.39.3
+        with:
+          sarif_file: target/spotbugsSarif.json
+          category: spotbugs
+
+  sast-proof:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+      # spotbugs:spotbugs solo genera el reporte y no corta el build: quien decide es el paso siguiente.
+      - name: Mismo análisis, incluyendo vulnerable/
+        run: ./mvnw -B -Psast-proof compile spotbugs:spotbugs
+      - name: Exigir que se haya detectado la SQL injection de vulnerable/
+        run: |
+          # Se busca dentro de <BugInstance>: la tabla <BugPattern> del mismo XML también repite el tipo.
+          if ! grep -qE "<BugInstance [^>]*type='SQL_INJECTION[A-Z_]*'" target/spotbugsXml.xml; then
+            echo "::error::SpotBugs no detectó la SQL injection de vulnerable/: el gate sast no es confiable"
+            exit 1
+          fi
+          echo "Hallazgos por tipo:"
+          grep -oE "<BugInstance [^>]*>" target/spotbugsXml.xml | grep -oE " type='[A-Z_0-9]+'" | sort | uniq -c
+      - name: Reporte de la prueba
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: spotbugs-proof-report
+          path: target/spotbugsXml.xml
+          if-no-files-found: warn
