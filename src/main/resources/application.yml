@@ -6,14 +6,14 @@ spring:
     hibernate:
       ddl-auto: create-drop
     open-in-view: false
-
-server:
-  error:
-    # Los errores no le dan al cliente pistas sobre la implementación.
-    include-stacktrace: never
-    include-message: never
-    include-binding-errors: never
-    include-exception: false
+  web:
+    error:
+      # Los errores no le dan al cliente pistas sobre la implementación.
+      # En Spring Boot 4 estas propiedades son spring.web.error.*; server.error.include-* no tiene efecto.
+      include-stacktrace: never
+      include-message: never
+      include-binding-errors: never
+      include-exception: false
 
 management:
   endpoints:
