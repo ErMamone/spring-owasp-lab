@@ -223,11 +223,13 @@ jobs:
         with:
           # Historial completo: un secreto borrado en un commit posterior sigue siendo un secreto filtrado.
           fetch-depth: 0
-      - uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Comentar en el PR exigiría pull-requests: write. El hallazgo ya se ve en el job.
-          GITLEAKS_ENABLE_COMMENTS: 'false'
+      # Se usa el CLI y no gitleaks-action: en un push la action solo escanea los commits de ese push, y falla si el rango
+      # incluye el commit raíz. La imagen va fijada por digest; Dependabot no la actualiza, hay que subirla a mano.
+      - name: Gitleaks sobre todo el historial
+        run: >-
+          docker run --rm -v "$PWD:/repo"
+          zricethezav/gitleaks:v8.30.1@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f
+          git /repo --no-banner --redact --exit-code 1
 
   sbom:
     runs-on: ubuntu-latest

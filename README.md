@@ -6,9 +6,9 @@ El foco principal es el pipeline DevSecOps: SAST, SCA, secret scanning, SBOM y D
 
 > **Contiene código vulnerable a propósito, con fines educativos. No deployar.**
 
-[![CI](https://github.com/OWNER/spring-owasp-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/spring-owasp-lab/actions/workflows/ci.yml)
-[![DAST](https://github.com/OWNER/spring-owasp-lab/actions/workflows/dast.yml/badge.svg)](https://github.com/OWNER/spring-owasp-lab/actions/workflows/dast.yml)
-[![Nightly SCA](https://github.com/OWNER/spring-owasp-lab/actions/workflows/nightly-sca.yml/badge.svg)](https://github.com/OWNER/spring-owasp-lab/actions/workflows/nightly-sca.yml)
+[![CI](https://github.com/ErMamone/spring-owasp-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/ErMamone/spring-owasp-lab/actions/workflows/ci.yml)
+[![DAST](https://github.com/ErMamone/spring-owasp-lab/actions/workflows/dast.yml/badge.svg)](https://github.com/ErMamone/spring-owasp-lab/actions/workflows/dast.yml)
+[![Nightly SCA](https://github.com/ErMamone/spring-owasp-lab/actions/workflows/nightly-sca.yml/badge.svg)](https://github.com/ErMamone/spring-owasp-lab/actions/workflows/nightly-sca.yml)
 
 ## Casos
 
