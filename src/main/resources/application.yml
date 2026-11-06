@@ -1,0 +1,26 @@
+# Configuración SEGURA (default). La versión insegura a propósito está en application-insecure.yml (caso A02).
+spring:
+  application:
+    name: spring-owasp-lab
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false
+
+server:
+  error:
+    # Los errores no le dan al cliente pistas sobre la implementación.
+    include-stacktrace: never
+    include-message: never
+    include-binding-errors: never
+    include-exception: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        # Solo health: env, beans, heapdump, etc. ni siquiera se registran como endpoints HTTP.
+        include: health
+  endpoint:
+    health:
+      show-details: never
