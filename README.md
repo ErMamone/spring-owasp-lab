@@ -143,7 +143,7 @@ Dependency-Check requiere una [NVD API key](https://nvd.nist.gov/developers/requ
 ## Configuración del repo en GitHub
 
 1. **Secret `NVD_API_KEY`** en *Settings → Secrets and variables → Actions*. Para que los PRs de Dependabot puedan actualizar la base, cargarlo también en los secrets de Dependabot.
-2. **Protección de `main`** en *Settings → Branches*: PR obligatorio y checks requeridos `build-test`, `sast`, `sca` y `secrets`.
+2. **Protección de `main`** en *Settings → Branches*: PR obligatorio y checks requeridos `build-test`, `sast`, `nvd-db`, `sca` y `secrets`. `nvd-db` hace falta porque, si falla, `sca` se saltea, y un job salteado cuenta como aprobado para un check requerido.
 3. **Repo público** para que los SARIF lleguen al tab *Security*: en un repo privado, code scanning requiere GitHub Advanced Security. Si la subida falla, el job no se pone rojo: el gate es el análisis, no la publicación.
 
 ## Limitaciones conocidas
