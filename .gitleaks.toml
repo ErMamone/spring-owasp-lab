@@ -1,0 +1,8 @@
+[extend]
+useDefault = true
+
+# Credencial pública del usuario semilla, en los ejemplos con curl del README. Solo se permite esta cadena exacta: la
+# regla curl-auth-user sigue activa para cualquier otra credencial.
+[allowlist]
+description = "Credencial pública del lab"
+regexes = ['''bob:bob-lab-pass''']
