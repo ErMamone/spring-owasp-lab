@@ -58,7 +58,7 @@ jobs:
         # El gate es el paso de SpotBugs. Una falla al publicar (repo privado sin code scanning, PR de un fork) no debe
         # confundirse con un hallazgo.
         continue-on-error: true
-        uses: github/codeql-action/upload-sarif@33d7b85da1a04171e211befe2c739303b9a4c066 # v4.39.3
+        uses: github/codeql-action/upload-sarif@1bd86f2fdb4b86187fa4059f16f31a3202acc9ea # v4.39.4
         with:
           sarif_file: target/spotbugsSarif.json
           category: spotbugs
@@ -166,7 +166,7 @@ jobs:
         if: always() && hashFiles('target/dependency-check-report.sarif') != ''
         # El gate es el paso de Dependency-Check: una falla al publicar no debe confundirse con un hallazgo.
         continue-on-error: true
-        uses: github/codeql-action/upload-sarif@33d7b85da1a04171e211befe2c739303b9a4c066 # v4.39.3
+        uses: github/codeql-action/upload-sarif@1bd86f2fdb4b86187fa4059f16f31a3202acc9ea # v4.39.4
         with:
           sarif_file: target/dependency-check-report.sarif
           category: dependency-check
